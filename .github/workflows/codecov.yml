@@ -13,16 +13,9 @@ jobs:
         uses: cachix/install-nix-action@v22
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate Coverage Report
         run: nix develop -c go test -coverprofile coverage.txt -covermode atomic ./...
-      - name: Upload Unit Test Coverage to Codecov
+      - name: Upload Test Coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           flags: unit
-      - name: Generate Coverage Report for Integration Tests
-        working-directory: test/
-        run: nix develop -c bash codecov.sh -coverprofile
-      - name: Upload Integration Test Coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          files: ./test/prepare_coverage.txt,./test/integration_coverage.txt
-          flags: integration
