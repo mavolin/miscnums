@@ -1,4 +1,4 @@
-package pin
+package pensioninsurancenumber
 
 type AreaCode uint8
 

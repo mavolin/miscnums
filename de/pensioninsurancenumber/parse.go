@@ -1,4 +1,4 @@
-package pin
+package pensioninsurancenumber
 
 import (
 	"errors"
@@ -7,17 +7,15 @@ import (
 )
 
 var (
-	ErrLength = errors.New("de/pin: pension insurance numbers must be 12 digits long")
+	ErrLength = errors.New("pension insurance number: must be 12 digits long")
 
-	ErrAreaCodeSyntax    = errors.New("de/pin: area codes must only contain digits")
-	ErrAreaCodeInvalid   = errors.New("de/pin: invalid area code")
-	ErrBirthDay          = errors.New("de/pin: the birthday must only contain digits")
-	ErrBirthMonth        = errors.New("de/pin: the birth month must be a number between '01' and '12'")
-	ErrBirthYear         = errors.New("de/pin: the birth year must contain only digits")
-	ErrLastNameLetter    = errors.New("de/pin: the last name letter must be an ascii letter")
-	ErrSerialNumber      = errors.New("de/pin: the serial number must contain only digits")
-	ErrCheckDigitSyntax  = errors.New("de/pin: the check digit must be a digit")
-	ErrCheckDigitInvalid = errors.New("de/pin: invalid check digit")
+	ErrAreaCode       = errors.New("pension insurance number: invalid area code")
+	ErrBirthDay       = errors.New("pension insurance number: birthday must only contain digits")
+	ErrBirthMonth     = errors.New("pension insurance number: birth month must be a number between '01' and '12'")
+	ErrBirthYear      = errors.New("pension insurance number: birth year must contain only digits")
+	ErrLastNameLetter = errors.New("pension insurance number: last name letter must be an ascii letter")
+	ErrSerialNumber   = errors.New("pension insurance number: serial number must only contain digits")
+	ErrCheckDigit     = errors.New("pension insurance number: check digit must be a digit")
 )
 
 // Parse parses the passed pension insurance number.
@@ -41,15 +39,15 @@ func Parse(s string) (PensionInsuranceNumber, error) {
 
 	untypAreaCode, ok := parseTwoDigits(s[:2])
 	if !ok {
-		return PensionInsuranceNumber{}, ErrAreaCodeSyntax
+		return PensionInsuranceNumber{}, ErrAreaCode
 	}
 
 	pin.AreaCode = AreaCode(untypAreaCode)
 	if !pin.AreaCode.IsValid() {
-		return PensionInsuranceNumber{}, ErrAreaCodeInvalid
+		return PensionInsuranceNumber{}, ErrAreaCode
 	}
 
-	// can be 0-99, see doc of pin.BirthDay
+	// can be 0-99, see doc of BirthDay
 	pin.BirthDay, ok = parseTwoDigits(s[2:4])
 	if !ok {
 		return PensionInsuranceNumber{}, ErrBirthDay
@@ -79,11 +77,11 @@ func Parse(s string) (PensionInsuranceNumber, error) {
 
 	pin.CheckDigit, ok = parseOneDigit(s[11:])
 	if !ok {
-		return PensionInsuranceNumber{}, ErrCheckDigitSyntax
+		return PensionInsuranceNumber{}, ErrCheckDigit
 	}
 
 	if pin.CheckDigit != calcCheckDigit(pin) {
-		return PensionInsuranceNumber{}, ErrCheckDigitInvalid
+		return PensionInsuranceNumber{}, ErrCheckDigit
 	}
 
 	return pin, nil

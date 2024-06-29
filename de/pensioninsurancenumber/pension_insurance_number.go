@@ -1,6 +1,7 @@
-// Package pin provides parsing and validation for German Pension Insurance
-// Numbers (Rentenversicherungsnummer).
-package pin // probably ambiguous, but pensioninsurancenumber seems too long
+// Package pensioninsurancenumber provides parsing and validation for German
+// Pension Insurance Numbers (Rentenversicherungsnummer).
+package pensioninsurancenumber
+
 import (
 	"encoding"
 	"fmt"
@@ -41,13 +42,7 @@ type PensionInsuranceNumber struct {
 // Birthdate returns the assumed birthday of the holder of the pension
 // insurance number.
 //
-// The returned time will use UTC as its location, because a) just because a
-// person has a German pension insurance number, it does not mean they were
-// born in the Europe/Berlin timezone, and b) birthdays are regarded as
-// timezone-agnostic (i.e. just because a person was born on the 2nd of the
-// month at 2am in New Zealand, that does not mean that they would celebrate
-// their birthday on the 1st when they are in Germany, although that would
-// be the correct day considering the timezone).
+// The returned time uses UTC as location.
 //
 // # Inaccuracies
 //
@@ -68,11 +63,11 @@ type PensionInsuranceNumber struct {
 //     month as day.
 //     Check if BirthDay > 31 to determine if this is the case.
 //
-//  3. The pension insurance number holder is 100 years or older.
-//     Since the BirthYear is only two digits, it is not possible to determine
-//     the correct century.
-//     Birthdate will attempt to guess it, by assuming that the holder is
-//     younger than 100 years and picking the century the appropriate century.
+//  3. The pension insurance number holder is 100 years or older:
+//     Since the BirthYear is specified using only two digits, it is not
+//     possible to always determine the correct century.
+//     Instead, Birthdate assumes that the holder is younger than 100 years,
+//     and picks a year within the last 99 years.
 func (pin PensionInsuranceNumber) Birthdate() time.Time {
 	if pin.BirthMonth < 1 || pin.BirthMonth > 12 {
 		return time.Time{}
