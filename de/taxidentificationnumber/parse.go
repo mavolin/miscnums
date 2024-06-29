@@ -1,4 +1,4 @@
-package tin
+package taxidentificationnumber
 
 import (
 	"errors"
@@ -9,13 +9,13 @@ import (
 )
 
 var (
-	ErrLength = errors.New("de/tin: tax ids must be 11 digits long")
-	ErrSyntax = errors.New("de/tin: tax ids must only contain digits, and may not start with 0")
+	ErrLength = errors.New("tax identification number: must be 11 digits long")
+	ErrSyntax = errors.New("tax identification number: must only contain digits, and may not start with 0")
 	// ErrRepetition signifies that the parser found a number that appears
 	// more than three times, or that it found two numbers that appear
 	// more than once.
-	ErrRepetition = errors.New("de/tin: tax ids may not contain the same digit more than three times")
-	ErrCheckDigit = errors.New("de/tin: invalid check digit")
+	ErrRepetition = errors.New("tax identification number: mustn't contain the same digit more than three times")
+	ErrCheckDigit = errors.New("tax identification number: invalid check digit")
 )
 
 // tinRegexp is the regular expression used to validate string-formatted tax
@@ -28,7 +28,7 @@ var tinRegexp = regexp.MustCompile(`^[1-9]\d{10}$`)
 //
 // If Parse returns without an error, the tax id is considered syntactically
 // valid.
-func Parse(s string) (TIN, error) {
+func Parse(s string) (TaxIdentificationNumber, error) {
 	s = strings.ReplaceAll(s, " ", "")
 	s = strings.ReplaceAll(s, "/", "")
 
@@ -49,7 +49,7 @@ func Parse(s string) (TIN, error) {
 }
 
 // ParseNum is the same as [Parse], but takes a number instead of a string.
-func ParseNum(n uint64) (TIN, error) {
+func ParseNum(n uint64) (TaxIdentificationNumber, error) {
 	// a tax id is elven digits long
 	if n < 10_000_000_000 || n > 99_999_999_999 {
 		return 0, ErrLength
@@ -63,12 +63,12 @@ func ParseNum(n uint64) (TIN, error) {
 		return 0, ErrCheckDigit
 	}
 
-	return TIN(n), nil
+	return TaxIdentificationNumber(n), nil
 }
 
-// isValidDigitRepetition checks that the passed tin does not contain the same
-// digit more than three times and that no digits other than one appear more
-// than once.
+// isValidDigitRepetition checks that the passed tax identification number does
+// not contain the same digit more than three times and that no digits other
+// than one appear more than once.
 func isValidDigitRepetition(n uint64) bool {
 	var repCounts [10]uint8
 

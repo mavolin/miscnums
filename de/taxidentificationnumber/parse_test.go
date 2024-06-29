@@ -1,4 +1,4 @@
-package tin
+package taxidentificationnumber
 
 import "testing"
 
