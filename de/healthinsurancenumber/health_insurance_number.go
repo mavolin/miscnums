@@ -1,5 +1,5 @@
-// Package healthinsurancenumber provides parsing and validation for German health
-// insurance ids.
+// Package healthinsurancenumber provides parsing and validation for German
+// health insurance numbers.
 package healthinsurancenumber
 
 import (
@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	ErrSyntax     = errors.New("de/healthinsurancenumber: invalid health insurance number")
-	ErrCheckDigit = errors.New("de/healthinsurancenumber: invalid check digit")
+	ErrSyntax     = errors.New("health insurance number: invalid health insurance number")
+	ErrCheckDigit = errors.New("health insurance number: invalid check digit")
 )
 
 // HealthInsuranceNumber represents a 10-digit German health insurance id.

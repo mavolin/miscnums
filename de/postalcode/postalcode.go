@@ -1,4 +1,4 @@
-// Package postalcode provides parsing and validation for German ZIP codes
+// Package postalcode provides parsing and validation for German postal codes
 // (Postleitzahl).
 package postalcode
 
@@ -8,7 +8,7 @@ import (
 	"regexp"
 )
 
-var ErrSyntax = errors.New("de/postalcode: postal codes must be 5-digit numbers")
+var ErrSyntax = errors.New("postal code: must be 5-digit number")
 
 // PostalCode represents a German postal code code (Postleitzahl).
 //
