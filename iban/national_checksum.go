@@ -118,7 +118,7 @@ var checksumFuncs = map[iso3166.Alpha2Code]func(IBAN) bool{
 	},
 	// https://en.wikipedia.org/wiki/International_Bank_Account_Number#IBAN_formats_by_country
 	// https://www.ecbs.org/Download/Tr201v3.9.pdf (page 105)
-	// ECBS calls the concatentation of the bank code and account no. the
+	// ECBS calls the concatenation of the bank code and account no. the
 	// "account number", which is a bit confusing.
 	// Otherwise, the same as wiki.
 	iso3166.NO: func(iban IBAN) bool {
@@ -188,7 +188,7 @@ var checksumFuncs = map[iso3166.Alpha2Code]func(IBAN) bool{
 
 // https://en.wikipedia.org/wiki/International_Bank_Account_Number#National_check_digits
 // https://www.ecbs.org/Download/Tr201v3.9.pdf (page 34)
-// wiki has complement wrong, otherwise as above
+// Wiki has complement wrong, otherwise as above.
 func czech(iban IBAN) bool {
 	r := weighted(iban.BranchCode, 11, 10, 5, 8, 4, 2, 1)
 	if r != 0 {
@@ -196,11 +196,7 @@ func czech(iban IBAN) bool {
 	}
 
 	r = weighted(iban.AccountNumber, 11, 6, 3, 7, 9, 10, 5, 8, 4, 2, 1)
-	if r != 0 {
-		return false
-	}
-
-	return true
+	return r == 0
 }
 
 // https://en.wikipedia.org/wiki/International_Bank_Account_Number#National_check_digits
@@ -229,17 +225,16 @@ func franceTransliterate(s string) string {
 	return string(bs)
 }
 
-var (
-	// https://www.ecbs.org/Download/Tr201v3.9.pdf (page 77)
-	// Officially called odd mapping, but since they consider the first digit
-	// to be odd, and 0 is even, I'm swapping the names.
-	italyEvenMapping = [...]int{
-		1, 0, 5, 7, 9, 13, 15, 17, 19, 21,
-		2, 4, 18, 20, 11, 3, 6, 8, 12, 14,
-		16, 10, 22, 25, 24, 23,
-	}
-	// odd mapping is just ascending numbers
-)
+// https://www.ecbs.org/Download/Tr201v3.9.pdf (page 77)
+// Officially called odd mapping, but since they consider the first digit
+// to be odd, and 0 is even, I'm swapping the names.
+var italyEvenMapping = [...]int{
+	1, 0, 5, 7, 9, 13, 15, 17, 19, 21,
+	2, 4, 18, 20, 11, 3, 6, 8, 12, 14,
+	16, 10, 22, 25, 24, 23,
+}
+
+// Odd mapping is just ascending numbers.
 
 func italy(iban IBAN) bool {
 	if len(iban.NationalChecksum) != 1 {
@@ -318,10 +313,10 @@ func weighted(s string, mod int, weights ...int) int {
 	return sum % mod
 }
 
-func weightedRTL(s string, mod int, weigths ...int) int {
+func weightedRTL(s string, mod int, weights ...int) int {
 	var sum int
 	for i, r := 0, len(s)-1; r >= 0; i, r = i+1, r-1 {
-		sum += (digit(rune(s[r])) * weigths[i%len(weigths)]) % mod
+		sum += (digit(rune(s[r])) * weights[i%len(weights)]) % mod
 	}
 	return sum % mod
 }

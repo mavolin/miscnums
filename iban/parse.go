@@ -70,7 +70,7 @@ func Parse(s string) (IBAN, error) {
 
 	iban.BBAN = s[4:]
 
-	bbanRegexp, _ := bbanRegexps[iban.CountryCode]
+	bbanRegexp := bbanRegexps[iban.CountryCode]
 	if bbanRegexp != nil {
 		matches := bbanRegexp.FindStringSubmatch(iban.BBAN)
 		if matches == nil {

@@ -10,7 +10,7 @@ import (
 
 var ErrSyntax = errors.New("postal code: must be 5-digit number")
 
-// PostalCode represents a German postal code code (Postleitzahl).
+// PostalCode represents a German postal code (Postleitzahl).
 //
 // It is a 5-digit string.
 type PostalCode string

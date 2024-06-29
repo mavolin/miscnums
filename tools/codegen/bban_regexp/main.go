@@ -22,6 +22,9 @@ func main() {
 func run() error {
 	// table needs to marked with id="IBAN_formats_by_country_table"
 	in, err := os.Open("in.html")
+	if err != nil {
+		return err
+	}
 	defer in.Close()
 
 	n, err := html.Parse(in)
@@ -125,7 +128,7 @@ func extractRawRulesFromTable(tbody *html.Node) (map[iso3166.Alpha2Code][2]strin
 
 		bbanEl := checkDigitsEl.NextSibling
 		for bbanEl != nil {
-			switch bbanEl.Type {
+			switch bbanEl.Type { //nolint:exhaustive
 			case html.TextNode:
 				formatBuilder.WriteString(bbanEl.Data)
 			case html.ElementNode:
@@ -142,7 +145,7 @@ func extractRawRulesFromTable(tbody *html.Node) (map[iso3166.Alpha2Code][2]strin
 
 		format := strings.ReplaceAll(formatBuilder.String(), " ", "")
 		format = strings.ReplaceAll(format, "\n", "")
-		rawRules[countryCode] = [2]string{charClasses, formatBuilder.String()}
+		rawRules[countryCode] = [2]string{charClasses, format}
 
 		tr = nextElement(tr.NextSibling)
 	}
@@ -183,7 +186,7 @@ func nextElement(n *html.Node) *html.Node {
 
 func genRules(rawRules map[iso3166.Alpha2Code][2]string) (map[iso3166.Alpha2Code]string, error) {
 	// map[iso3166.Alpha2Code]rawRegexp
-	var rules = make(map[iso3166.Alpha2Code]string, len(rawRules))
+	rules := make(map[iso3166.Alpha2Code]string, len(rawRules))
 
 	for country, rule := range rawRules {
 		rawLengths := strings.Split(rule[0], ",")

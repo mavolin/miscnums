@@ -31,6 +31,9 @@ func main() {
 
 func run() error {
 	in, err := os.Open("in.html")
+	if err != nil {
+		return err
+	}
 	defer in.Close()
 
 	n, err := html.Parse(in)
@@ -54,9 +57,7 @@ func run() error {
 
 			// we found our table
 
-			if n.FirstChild == nil || n.FirstChild != n.LastChild /* len(ChildNodes) != 1 */ ||
-				n.FirstChild.DataAtom != atom.Tbody {
-
+			if n.FirstChild == nil || n.FirstChild != n.LastChild /* len(ChildNodes) != 1 */ || n.FirstChild.DataAtom != atom.Tbody {
 				panic("expected country code table to contain a single node, named tbody")
 			}
 
@@ -134,7 +135,7 @@ func extractCountryCodesFromTable(tbody *html.Node) ([]iso3166.Alpha2Code, error
 
 			// two cases, either td contains the name, or an anchor containing the name
 
-			switch td.FirstChild.Type {
+			switch td.FirstChild.Type { //nolint:exhaustive
 			case html.TextNode:
 				code.Code = td.FirstChild.Data
 			case html.ElementNode:
