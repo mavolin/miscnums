@@ -1,9 +1,11 @@
+version: 2
+
 before:
   hooks:
     - go mod tidy
     - go generate ./...
-build:
-  skip: true
+builds:
+  - skip: true
 changelog:
   use: github
   sort: asc
@@ -23,9 +25,4 @@ changelog:
     - title: ✏ Others
       order: 999
   filters:
-    exclude:
-      - ^build
-      - ^ci
-      - ^docs
-      - ^style
-      - ^test
+    exclude: [^build, ^ci, ^docs, ^style, ^test]
